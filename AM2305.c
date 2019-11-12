@@ -90,6 +90,7 @@ int8_t    AM2305_ReadBit(void)
 //#############################################################################################
 bool 		AM2305_Init(void)
 {
+  _AM2305_TIMER.Instance->ARR = 0xFFFF;
   HAL_TIM_Base_Start(&_AM2305_TIMER);
   AM2305_PortOutput();
   while(HAL_GetTick() < 3000)
