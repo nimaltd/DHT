@@ -92,6 +92,8 @@ bool 		AM2305_Init(void)
 {
   HAL_TIM_Base_Start(&_AM2305_TIMER);
   AM2305_PortOutput();
+  while(HAL_GetTick() < 3000)
+    AM2305_DelayMs(1);
   return AM2305_StartToRead();
 }
 //#############################################################################################

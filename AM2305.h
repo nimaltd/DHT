@@ -2,7 +2,7 @@
 #define	_AM2305_H
 
 //Writen By "Nima Askari"			www.gitHub.com/NimaLTD
-//version 2.00
+//version 2.01
 
 #include <stdbool.h>
 
