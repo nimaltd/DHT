@@ -9,7 +9,7 @@ Please Do This ...
 <br />
 1) Select "General peripheral Initalizion as a pair of '.c/.h' file per peripheral" on project settings.
 <br />
-2) Enable a Timer with 1 microsecond tick. example for 168 MHz bus: set prescaler to 168-1 and period to 65000.
+2) Enable a Timer with 1 microsecond tick. example for 168 MHz bus: set prescaler to 168-1.
 <br />
 3) Config "AM2305Config.h".
 <br />
