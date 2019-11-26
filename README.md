@@ -21,6 +21,16 @@ How to use this Library:
 #include "DHT.h"
 DHT_t     am2301;
 bool      am2301_ok;
+
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == am2301.pin)
+  {
+    DHT_pinChangeCallBack(&am2301);
+  }
+}
+
 int main()
 {
   DHT_init(&am2301,DHT_Type_AM2301,&htim7,72,AM2301_GPIO_Port,AM2301_Pin); 
@@ -31,6 +41,7 @@ int main()
     am2301_ok = DHT_readData(&am2301,&t,&h);  
   }
 }
+
 ```
 <a ><img src="1.jpg" height="300"/></a>
 <a ><img src="2.jpg" height="300"/></a>
