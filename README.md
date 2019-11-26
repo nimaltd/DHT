@@ -46,5 +46,11 @@ int main()
 <a ><img src="1.jpg" height="300"/></a>
 <a ><img src="2.jpg" height="300"/></a>
 
+Reversion History:   
+(2.0.0)   
+rewrite completly and Add external interrupt to reading pulses.   
+  
+(1.0.0)   
+First Release.   
 
 
