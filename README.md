@@ -1,4 +1,4 @@
-# DHT Library
+# DHT Library for STM32 HAL
 
 * http://www.github.com/NimaLTD   
 * https://www.instagram.com/github.nimaltd/   
