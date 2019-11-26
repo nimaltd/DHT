@@ -15,7 +15,7 @@ How to use this Library:
 * Create your DHT_t struct.   
 * Put DHT_pinChangeCallBack(your struct) in external callback function.   
 * Call DHT_init( .. .. .. ).   
-* Read data by DHT_readData(*,*)
+* Read data by DHT_readData(&temp,&humid)
 
 ```
 #include "DHT.h"
