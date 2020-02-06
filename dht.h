@@ -7,12 +7,15 @@
   Instagram:  http://instagram.com/github.NimaLTD
   Youtube:    https://www.youtube.com/channel/UCUhY7qY1klJm1d2kulr9ckw
   
-  Version:    2.0.0
+  Version:    2.0.1
   
   
   Reversion History:
+  (2.0.1)
+  Fix STM32F4 gpio register.
+  
   (2.0.0)
-  rewrite completly and Add external interrupt to reading pulses.
+  Rewrite completly and Add external interrupt to reading pulses.
   
   (1.0.0)
   First Release.

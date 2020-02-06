@@ -112,11 +112,11 @@ bool  DHT_readData(DHT_t *dht, float *Temperature, float *Humidity)
     case DHT_Type_AM2301:
     case DHT_Type_AM2305:
       DHT_output(dht);
-      dht->gpio->BRR = dht->pin;    
+      dht->gpio->BSRR = (dht->pin)<<16;    
       DHT_delayMs(5);
       dht->gpio->BSRR = dht->pin;
       DHT_delayUs(dht,20);
-      dht->gpio->BRR = dht->pin;    
+      dht->gpio->BSRR = (dht->pin)<<16;    
       DHT_delayUs(dht,5);
       dht->cnt = 0;
       dht->lastCNT = 0;
