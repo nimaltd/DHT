@@ -16,6 +16,7 @@ How to use this Library:
 * Put DHT_pinChangeCallBack(your struct) in external callback function.   
 * Call DHT_init( .. .. .. ).   
 * Read data by DHT_readData(&temp,&humid)
+* Added support for DHT11 sensor (by Ebrahim)
 
 ```
 #include "DHT.h"

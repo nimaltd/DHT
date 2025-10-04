@@ -21,10 +21,13 @@ void  DHT_pinChangeCallBack(DHT_t *dht)
   }
 }
 //###############################################################################################################
-void  DHT_delayUs(DHT_t *dht, uint16_t DelayUs)
+//Modified Us
+void DHT_delayUs(DHT_t *dht, uint16_t DelayUs)
 {
-  dht->tim->Instance->CNT=0;
-  while(dht->tim->Instance->CNT < DelayUs);  
+    uint16_t start = __HAL_TIM_GET_COUNTER(dht->tim);
+    while ((__HAL_TIM_GET_COUNTER(dht->tim) - start) < DelayUs) {
+        __NOP(); 
+    }
 }
 //###############################################################################################################
 void  DHT_output(DHT_t *dht)
@@ -79,11 +82,37 @@ bool  DHT_decode(DHT_t *dht,uint8_t *byteArray)
         else
           return false;  
       }
-    return true;  
+      return true;
+
+    case DHT_Type_DHT11:
+      bit = 7;
+      for(uint8_t i=0 ; i<80 ; i+=2)
+      {
+        if((dht->data[i+2] >= 35) && (dht->data[i+2] <= 70))
+        {
+          if((dht->data[i+3] >= 10) && (dht->data[i+3] <= 45))
+            *byteArray &= ~(1<<bit);
+          else if((dht->data[i+3] >= 55) && (dht->data[i+3] <= 95))
+            *byteArray |= (1<<bit);
+          else
+            return false;
+          bit--;
+          if(bit == -1)
+          {
+            bit = 7;
+            byteArray++;
+          }
+        }
+        else
+          return false;
+      }
+      return true;
+
     default:
       return false;        
   }   
 }
+
 //###############################################################################################################
 void  DHT_init(DHT_t *dht, DHT_Type_t type, TIM_HandleTypeDef *tim,uint16_t  timerBusFrequencyMHz, GPIO_TypeDef *gpio, uint16_t  pin)
 {
@@ -129,7 +158,7 @@ bool  DHT_readData(DHT_t *dht, float *Temperature, float *Humidity)
           goto ERROR;
         if(HAL_GetTick() - dht->time > 1)
         {
-          uint8_t data[5];
+          uint8_t data[5] = {0};
           if(DHT_decode(dht,data) == false)
             goto ERROR;
           if(((data[0] + data[1] + data[2] + data[3]) & 0x00FF) != data[4])
@@ -145,12 +174,54 @@ bool  DHT_readData(DHT_t *dht, float *Temperature, float *Humidity)
           return true;
         }
       }        
-      default:
+//Add support for DHT11 sensor
+    case DHT_Type_DHT11:
+      DHT_output(dht);
+      dht->gpio->BSRR = (dht->pin)<<16;
+      DHT_delayMs(20);                     
+      dht->gpio->BSRR = dht->pin;
+      DHT_delayUs(dht,20);
+      dht->cnt = 0;
+      dht->lastCNT = 0;
+      dht->tim->Instance->CNT = 0;
+      startTime = HAL_GetTick();
+      DHT_input(dht);
+
+      while(1)
+      {
+        if(HAL_GetTick() - startTime > 20) 
+          goto ERROR;
+        if(HAL_GetTick() - dht->time > 1)
+        {
+          uint8_t data[5] = {0};
+          if(DHT_decode(dht,data) == false)
+            goto ERROR;
+          if(((data[0] + data[1] + data[2] + data[3]) & 0xFF) != data[4])
+            goto ERROR;
+
+          dht->humidity = (float)data[0];     
+          if(Humidity != NULL)
+            *Humidity = dht->humidity;
+
+          dht->temperature = (float)data[2];  
+          if(Temperature != NULL)
+            *Temperature = dht->temperature;
+
+          dht->dataValid = true;
+          DHT_output(dht);
+          return true;
+        }
+      }
+      break;
+
+    default:
       break;    
   }
-  ERROR:
+
+ERROR:
   dht->dataValid = false;
   DHT_output(dht);
   return false;    
 }
+
 //###############################################################################################################
